@@ -32,6 +32,10 @@ public class Users implements UserDetails {
     @NonNull
     private String password;
 
+    private String email;
+
+    private boolean sentimentAnalysis;
+
     @DBRef
     private List<Journal> journalEntries = new ArrayList<>();
 

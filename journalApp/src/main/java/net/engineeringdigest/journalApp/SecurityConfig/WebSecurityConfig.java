@@ -27,8 +27,8 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         return http.authorizeHttpRequests(request -> request
-                        .antMatchers("/api/signUp", "/api/clearUsers").permitAll()
-                        .antMatchers("/admin/**").hasRole("ADMIN")
+                        .antMatchers("/api/signUp", "/api/clearUsers", "/api/greetings/{cityName}").permitAll()
+                        .antMatchers("/admin/**", "/audio/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)

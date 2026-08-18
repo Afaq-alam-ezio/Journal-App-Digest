@@ -10,8 +10,13 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @Slf4j
@@ -28,6 +33,25 @@ public class UserController {
 
 //    not needed if SLF4J is used, as we have used here already, check annotation above the class name
 //    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
+    @GetMapping("/greetings/{cityName}")
+    public ResponseEntity<?> greetings(@PathVariable String cityName){
+
+        return new ResponseEntity<>(userService.getWeather(cityName), HttpStatus.FOUND);
+    }
+
+    @GetMapping("/getEmailAndSA")
+    public ResponseEntity<?> getByEmailAndSA(){
+
+        try {
+
+            return new ResponseEntity<>(userService.getByEmailAndSA(), HttpStatus.ACCEPTED);
+        }
+        catch (Exception e) {
+
+            return new ResponseEntity<>("Error occurred : " + e, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @GetMapping("/getUserName/{username}")
     public ResponseEntity<?> getByUserName(@PathVariable String username){
@@ -52,7 +76,7 @@ public class UserController {
         }
 
 //        logger.error("credentials not passed properly");  simply use the instance name " log " of SLF4j
-        log.error("credentials not passed properly");
+//        log.error("credentials not passed properly");
 
         return new ResponseEntity<>("Invalid credentials", HttpStatus.NOT_ACCEPTABLE);
     }
@@ -65,7 +89,6 @@ public class UserController {
 
     @PostMapping("/addJournal")
     public ResponseEntity<?> addJournalEntryForUser(@RequestBody Journal newJournalData){
-
 
         return new ResponseEntity<>(journalService.createNewDataByUserName(newJournalData), HttpStatus.ACCEPTED);
     }

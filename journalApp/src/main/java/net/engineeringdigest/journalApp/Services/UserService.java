@@ -1,25 +1,30 @@
 package net.engineeringdigest.journalApp.Services;
 
+import net.engineeringdigest.journalApp.CacheConfigs.WeatherCache;
 import net.engineeringdigest.journalApp.Entities.Journal;
 import net.engineeringdigest.journalApp.Entities.Users;
 import net.engineeringdigest.journalApp.Repositories.JournalRepo;
+import net.engineeringdigest.journalApp.Repositories.QueryCriteriaUsingMongoTemplate;
 import net.engineeringdigest.journalApp.Repositories.UsersRepo;
+import net.engineeringdigest.journalApp.POJOs.WeatherData;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.jca.context.SpringContextResourceAdapter;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
+@Service
 public class UserService {
 
     @Autowired
@@ -30,6 +35,21 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @Autowired
+    private QueryCriteriaUsingMongoTemplate queryCriteria;
+
+    @Autowired
+    private WeatherCache weatherCache;
+
+    @Value("${weather.apiKey}")
+    private String APIKEY;
+
+    @Value("${weather.url}")
+    private String URL;
 
     public List<Users> fetchAllUsers() {
 
@@ -61,11 +81,6 @@ public class UserService {
         return "User created";
     }
 
-    public String clearAllUsers() {
-
-        userRepo.deleteAll();
-        return "Cleared successfully!";
-    }
 
     public String updateUser(Users userData) {
 
@@ -131,4 +146,39 @@ public class UserService {
     }
 
 
+    public ResponseEntity<WeatherData> getWeather(String cityName) {
+
+        String finalURl = weatherCache.weatherCacheData
+                .get("weatherApi")
+                .replace("cityName", cityName)
+                .replace("APIKEY", APIKEY);
+
+        ResponseEntity<WeatherData> response = restTemplate.exchange(finalURl, HttpMethod.GET, null, WeatherData.class);
+
+        return response;
+    }
+
+    public String clearAllUsers() {
+
+        userRepo.deleteAll();
+        return "Cleared successfully!";
+    }
+
+    public String deleteUserByUsername(String username) {
+
+        Users user = userRepo.findByUserName(username);
+
+        if(user != null){
+
+            userRepo.deleteById(user.getId());
+            return "user deleted successfully";
+        }
+
+        return "User Not found";
+    }
+
+    public List<Users> getByEmailAndSA() {
+
+        return queryCriteria.getUsersWithEmailAndSA();
+    }
 }

@@ -1,10 +1,10 @@
 package net.engineeringdigest.journalApp.Entities;
 
 import lombok.Data;
+import net.engineeringdigest.journalApp.Config.SentimentEnumConfig;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
@@ -18,5 +18,6 @@ public class Journal {
     private String content;
     private String description;
     private LocalDateTime date;
+    private SentimentEnumConfig sentiment;
 
 }
