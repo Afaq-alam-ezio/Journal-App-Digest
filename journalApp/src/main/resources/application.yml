@@ -1,0 +1,150 @@
+spring:
+  redis:
+    url: ${REDIS_URL}
+  data:
+    mongodb:
+      uri: ${MONGO_URI}
+      auto-index-creation: true
+  profiles:
+    active: dev
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+server:
+  port: 8080
+  servlet:
+    context-path: /journal
+
+weather:
+  apiKey: ${WEATHER_API_KEY}
+  url: https://api.openweathermap.org/data/2.5/weather?q=cityName&appid=APIKEY
+
+elevenLabs:
+  apiKey: ${ELEVENLABS_API_KEY}
+  voiceId: 1lYr3YU5Zl0sGzL84t1N
+
+
+
+
+
+
+
+
+
+#spring:
+#  redis:
+#    host:
+#    port:
+#    url:
+#  data:
+#    mongodb:
+#      uri:
+#      auto-index-creation:
+#        true
+#  profiles:
+#    active: dev
+#  mail:
+#    host:
+#    port:
+#    username:
+#    password:
+#    properties:
+#      mail:
+#        smtp:
+#          auth: true
+#          starttls:
+#            enable: true
+
+#Commenting out all the uri above will result in local connection on port: 2707 else will go on online db port
+
+#if current active profile is dev or prod then theirs config will override below config
+#server:
+#  port:
+#    8090
+#  servlet:
+#    context-path:
+#      /journal
+#
+#
+#weather:
+#  apiKey:
+#  url:
+#
+#
+#elevenLabs:
+#  apiKey:
+#  voiceId:
+#
+#
+
+#logging:
+#  level:
+#    Root : TRACE
+#    net:
+#      engineeringdigest:
+#        journalApp:
+#          Controllers:
+
+#            UserController: DEBUG
+#            UserController: OFF       #this will turn off the logging details for UserController class
+
+
+# ============================================================
+# LOGGING CONFIGURATION
+# ============================================================
+# Controls how much detail gets printed to the console/log file,
+# either globally (root) or per-package/per-class.
+#
+# Available levels, from MOST detailed to LEAST detailed:
+#   TRACE  -> everything, extremely verbose (method entry/exit, fine internals)
+#   DEBUG  -> detailed info useful for debugging (variable values, flow steps)
+#   INFO   -> general informational messages (app started, user created, etc.)
+#   WARN   -> something unexpected happened, but app can continue
+#   ERROR  -> something failed / broke
+#   OFF    -> disables logging entirely for that logger (nothing printed)
+#   ALL    -> opposite of OFF, enables absolutely everything (rarely used directly)
+#
+# NOTE: setting a level shows THAT level AND everything BELOW it in severity.
+# e.g. INFO shows INFO + WARN + ERROR, but NOT DEBUG/TRACE (those are more verbose, and get hidden).
+# TRACE shows literally everything, since it's the most verbose level.
+#
+# More specific (package/class-level) settings OVERRIDE the root setting
+# for that specific package/class -- everything else falls back to root.
+# ============================================================
+
+#logging:
+#  level:
+    # ROOT -- applies to EVERY class/package in the app, unless overridden below.
+    # Currently set to TRACE = maximum verbosity, shows everything from every class.
+    # Good for deep debugging, but very noisy -- usually too much for daily use.
+#    root: TRACE
+
+    # ------------------------------------------------------------
+    # PER-CLASS OVERRIDE EXAMPLE (currently commented out / disabled)
+    # ------------------------------------------------------------
+    # Full package path must match the class's actual "package ...;" line exactly,
+    # or this override silently does nothing (no error, just gets ignored).
+    #
+    # net.engineeringdigest.journalApp.Controllers.UserController: DEBUG
+    #   -> would show DEBUG and above (DEBUG, INFO, WARN, ERROR) for ONLY this class,
+    #      regardless of what root is set to.
+    #
+    # net.engineeringdigest.journalApp.Controllers.UserController: OFF
+    #   -> would COMPLETELY SILENCE this class's logs (including logger.error(...) calls),
+    #      even though root is TRACE and everything else stays fully verbose.
+    #      Useful for muting one noisy/irrelevant class without affecting the rest of the app.
+    #
+    # net:
+    #   engineeringdigest:
+    #     journalApp:
+    #       Controllers:
+    #         UserController: OFF
