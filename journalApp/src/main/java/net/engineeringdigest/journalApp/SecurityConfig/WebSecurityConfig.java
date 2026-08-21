@@ -46,17 +46,29 @@ public class WebSecurityConfig{
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
         return http.authorizeHttpRequests(request -> request
-                        .antMatchers("/api/signup", "/api/login", "/api/clearUsers", "/api/greetings/{cityName}").permitAll()
+                        .antMatchers("/login", "/signup", "/clearUsers", "/greetings/{cityName}").permitAll()
                         .antMatchers("/admin/**", "/audio/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
-//                .httpBasic(Customizer.withDefaults())                                         // for normal login
                 .csrf(AbstractHttpConfigurer::disable)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)     // for jwt based login
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))   // ADD THIS
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//
+//        return http.authorizeHttpRequests(request -> request
+//                        .antMatchers("/api/signup", "/api/login", "/api/clearUsers", "/api/greetings/{cityName}").permitAll()
+//                        .antMatchers("/admin/**", "/audio/**").hasRole("ADMIN")
+//                        .anyRequest().authenticated())
+////                .httpBasic(Customizer.withDefaults())                                         // for normal login
+//                .csrf(AbstractHttpConfigurer::disable)
+//                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)     // for jwt based login
+//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))   // ADD THIS
+//                .build();
+//    }
 
     // below is old approach newer one the DaoAuth and AuthManager approach
 //    @Autowired
