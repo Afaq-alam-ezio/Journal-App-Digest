@@ -1,7 +1,6 @@
-package net.engineeringdigest.journalApp.Controllers;
+package net.engineeringdigest.journalApp.Services;
 
 import net.engineeringdigest.journalApp.Config.EmailConfig;
-import net.engineeringdigest.journalApp.EmailService.EmailSenderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class EmailSenderController {
 
     @Autowired
-    private EmailSenderService emailSenderService;
+    private JournalService.EmailSenderService emailSenderService;
 
     @PostMapping("/sendMail")
     public ResponseEntity<String> mailSender(@RequestBody EmailConfig emailData){

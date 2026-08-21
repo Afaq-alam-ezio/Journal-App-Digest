@@ -1,18 +1,17 @@
 package net.engineeringdigest.journalApp.MailTest;
 
 import net.engineeringdigest.journalApp.Config.EmailConfig;
-import net.engineeringdigest.journalApp.EmailService.EmailSenderService;
+import net.engineeringdigest.journalApp.Services.JournalService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.mail.javamail.JavaMailSender;
 
 @SpringBootTest
 public class EmailSenderServiceTest {
 
     @Autowired
-    private EmailSenderService emailSenderService;
+    private JournalService.EmailSenderService emailSenderService;
 
     @Test
     public void EmailSenderServiceTest(){

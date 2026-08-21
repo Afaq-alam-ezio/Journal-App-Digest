@@ -1,5 +1,6 @@
 package net.engineeringdigest.journalApp.Services;
 
+import lombok.extern.slf4j.Slf4j;
 import net.engineeringdigest.journalApp.CacheConfigs.WeatherCache;
 import net.engineeringdigest.journalApp.Entities.Journal;
 import net.engineeringdigest.journalApp.Entities.Users;
@@ -11,6 +12,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +26,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 public class UserService {
 
@@ -50,6 +53,9 @@ public class UserService {
 
     @Value("${weather.url}")
     private String URL;
+
+    @Autowired
+    RedisCachingService redisCachingService;
 
     public List<Users> fetchAllUsers() {
 
@@ -148,13 +154,26 @@ public class UserService {
 
     public ResponseEntity<WeatherData> getWeather(String cityName) {
 
+        WeatherData weatherDataFromRedisCache = redisCachingService.getDataFromRedisCache(cityName, WeatherData.class);
+
+        if(weatherDataFromRedisCache != null){
+
+            log.info("Data used : "  + weatherDataFromRedisCache);
+            return new ResponseEntity<>(weatherDataFromRedisCache, HttpStatus.ACCEPTED);
+        }
+
         String finalURl = weatherCache.weatherCacheData
                 .get("weatherApi")
                 .replace("cityName", cityName)
                 .replace("APIKEY", APIKEY);
 
+
         ResponseEntity<WeatherData> response = restTemplate.exchange(finalURl, HttpMethod.GET, null, WeatherData.class);
 
+//      Saving to Redis Cache in below line for 10 minutes, its minute because we passed it in the "redisCachingService()"
+        if (response.getBody() != null) redisCachingService.setDataInRedisCache(cityName, response.getBody(), 10L);
+
+        log.info("Data used : "  + weatherDataFromRedisCache);
         return response;
     }
 
