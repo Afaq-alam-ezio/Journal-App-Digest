@@ -18,6 +18,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 
+@CrossOrigin
 @Slf4j
 @RestController
 @RequestMapping("/api")   // Base path for ALL methods in this class -> every
