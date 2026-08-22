@@ -54,7 +54,7 @@ public class WebSecurityConfig{
         return http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .authorizeHttpRequests(request -> request
-                        .antMatchers("/login", "/signup", "/clearUsers", "/greetings/*").permitAll()
+                        .antMatchers("/api/login", "/api/signup", "/api/clearUsers", "/api/greetings/*").permitAll()
                         .antMatchers("/admin/**", "/audio/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
